@@ -1,6 +1,10 @@
 package org.wecancodeit.hometask.Controllers;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.wecancodeit.hometask.Models.Household;
 import org.wecancodeit.hometask.Models.HouseholdMember;
 import org.wecancodeit.hometask.Models.Task;
 import org.wecancodeit.hometask.Repositories.HouseholdMemberRepository;
@@ -16,6 +21,7 @@ import org.wecancodeit.hometask.Services.HouseholdService;
 import org.wecancodeit.hometask.Services.TaskService;
 
 import jakarta.annotation.Resource;
+import org.wecancodeit.hometask.Services.UserService;
 
 @Controller
 public class TaskController {
@@ -26,6 +32,8 @@ public class TaskController {
     private TaskService taskService;
     @Resource
     private HouseholdService HHService;
+    @Resource
+    private UserService userService;
 
 
     @GetMapping("/createTask/{familyMemberId}")
@@ -72,11 +80,25 @@ public class TaskController {
     public String displayTaskDetails(Task info) {
         return "TaskInfoView";
     }
-//RK
-    @GetMapping("/add_task/{username}")
-     public String ShowHousehildwiseMembers(@PathVariable String username,Model model) throws Exception {
-//List<HouseholdMember>HouseholdMemberList = HHMrepo.findAll();
-model.addAttribute("household", HHService.retrieveHouseholdByName(username));
+
+    //RK
+    @GetMapping("/add_task")
+    public String ShowHousehildwiseMembers(Model model, HttpServletRequest request) throws Exception {
+        long userId = userService.getUserId(request);
+        if(userId==0){
+            throw new Exception("Not logged in");
+        }
+        Household household = HHService.retrieveHouseholdByUserId(userId);
+
+        List<Map<String, Object>> members = new ArrayList<>();
+        for (HouseholdMember member : household.getMembers()) {
+            Map<String, Object> memberInfo = new HashMap<>();
+            memberInfo.put("householdMemberId", member.getHouseholdMemberId());
+            memberInfo.put("name", member.getName()); // Replace with the actual method to get the age
+            members.add(memberInfo);
+        }
+
+        model.addAttribute("members", members);
         return "AddTask";
-}
+    }
 }

@@ -29,11 +29,9 @@
 
          <form method="post" action="/process-selected-product">
         <select class="form-select mb-4 w-25" aria-label="Default select example" id="product" name="members">
-
-
-             <!-- <option th:each="members : ${household.members}" th:value="${members.householdMemberId}"
-                th:text="${members.name}"></option> 
-        </select> -->
+              <option th:each="member : ${members}" th:value="${member.householdMemberId}"
+                th:text="${member.name}"></option>
+        </select>
 
 
         <input type="text" class="form-control mb-4 w-25" placeholder="task name">

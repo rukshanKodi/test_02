@@ -39,6 +39,15 @@ public class HouseholdService {
         }
     }
 
+    public Household retrieveHouseholdByUserId(long id) throws Exception {
+        try{
+            Household household = householdRepository.findHouseholdByUser_id(id);
+            return household;
+        } catch (Exception e) {
+            throw new Exception ("Household not found");
+        }
+    }
+
     public void addTaskToHousehold(Task task, Household household) {
         task.setHousehold(household);
         householdRepository.save(household);

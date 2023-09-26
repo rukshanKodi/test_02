@@ -31,7 +31,10 @@ public class HouseholdMember {
 
     public HouseholdMember() {
     }
-    
+
+    public long getHouseholdMemberId() {
+        return householdMemberId;
+    }
 
     public HouseholdMember(String name, Household household) {
         this.name = name;
@@ -47,7 +50,7 @@ public class HouseholdMember {
  public void addHousehold(Household household) {
         this.household = household;
     }
-   
+
     public Household getHousehold() {
         return household;
     }
